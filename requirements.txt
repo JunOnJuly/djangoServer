@@ -7,6 +7,10 @@ Django==3.2.9
 decorator==5.1.1
 django-extensions==3.1.5
 djangorestframework==3.13.1
+django-rest-auth
+django-allauth
+django-cors-headers
+djangorestframework-jwt
 executing==0.8.3
 ipython==8.2.0
 jedi==0.18.1
