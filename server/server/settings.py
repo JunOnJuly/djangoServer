@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import datetime
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gi+&vm4w0(4funaq-s0sudvozq-0qum@=+tl9&%+y@xmi__1ze'
+SECRET_KEY = 'django-insecure-!!jl$iqt#14$49wr&d+13*2xy11u4c*vc0p=l^iu6q0ehho$_8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -31,15 +31,30 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # installed
+    'accounts',
+
+    'django.contrib.sites',
+    'rest_auth',
+    'rest_auth.registration',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -123,3 +138,59 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:8080"
+]
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'access-control-request-method',
+    'access-control-request-headers',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    )
+
+AUTH_USER_MODEL = "accounts.User"
+SITE_ID = 1
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES': (
+'rest_framework.authentication.TokenAuthentication',
+'rest_framework.authentication.SessionAuthentication',
+'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+),
+'DEFAULT_PERMISSION_CLASSES': (
+'rest_framework.permissions.IsAuthenticated',
+),
+}
+#JWT_AUTH 설정을 위해 settings.py 맨 위해 import datetime을 추가하자!!
+JWT_AUTH = {
+# If the secret is wrong, it will raise a jwt.DecodeError telling you as such. You can still get at the payload by setting the JWT_VERIFY to False.
+'JWT_VERIFY': True,
+# You can turn off expiration time verification by setting JWT_VERIFY_EXPIRATION to False.
+# If set to False, JWTs will last forever meaning a leaked token could be used by an attacker indefinitely.
+'JWT_VERIFY_EXPIRATION': True,
+# This is an instance of Python's datetime.timedelta. This will be added to datetime.utcnow() to set the expiration time.
+# Default is datetime.timedelta(seconds=300)(5 minutes).
+'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+'JWT_ALLOW_REFRESH': True,
+'JWT_AUTH_HEADER_PREFIX': 'JWT',
+}
+REST_USE_JWT = True
